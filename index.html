@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<head>
+<title>UserDetails</title>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+.form-popup,.form-popup1 {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left:35%;
+  border: 3px solid black;
+  background-color:white;
+  padding: 10px;
+  margin: 50px;
+}
+</style>
+</head>
+<body ng-app="myapp">
+<div ng-controller="myctrl">
+<p>filter:</p><select ng-model="flt" ng-options="x for x in filter"></select>
+<h2>Table</h2>
+<table>
+<tr>
+	<th>index</th>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Country</th>
+    <th>DOB</th>
+    <th>Gender</th>
+    <th>Button</th>
+  </tr>
+  <tr ng-repeat="x in data | orderBy:flt">
+    <td>{{$index+1}}</td>
+    <td>{{x.name}}</td>
+    <td>{{x.age}}</td>
+    <td>{{x.country}}</td>
+    <td>{{x.dob}}</td>
+    <td>{{x.gender}}</td>
+    <td><button ng-click="editUser($index)">edit</button><button ng-click="deleteUser($index)">delete</button></td>
+  </tr>
+</table>
+<div class="form-popup" id="myForm">
+            <pre> NAME:   <input type="text"  name="names" ng-model="name" ></pre><br>
+            <pre> AGE:    <input type="text"  name="age" ng-model="age"></pre><br>
+            <pre> country: <select ng-model="country" ng-options="x for x in cty"></select></pre><br>
+            <pre> dob:   <input type="text"  name="dob" ng-model="dob"></pre><br>
+            <pre> gender:   <input type="text"  name="gender" ng-model="gender"></pre><br>
+       <button ng-click="add()">Add</button>
+       <button type="button" onclick="closeForm()">Close</button>
+       
+      </div>
+      <!--<button type="button" ng-click="closeFormtest()">closeFormtest</button>-->
+      <div class="form-popup1" id="myForm1">
+            <pre> NAME:   <input type="text"  name="names" ng-model="edit_name" ></pre><br>
+            <pre> AGE:    <input type="text"  name="age" ng-model="edit_age"></pre><br>
+            <pre> country: <select ng-model="edit_country" ng-options="x for x in cty"></select></pre><br>
+            <pre> dob:   <input type="text"  name="dob" ng-model="edit_dob"></pre><br>
+            <pre> gender:   <input type="text"  name="gender" ng-model="edit_gender"></pre><br>
+       <button ng-click="edit(index_pass)">Change</button>
+       <button type="button" onclick="closeForm1()">Close</button>
+       
+      </div>
+</div>
+
+      <!--<button type="button" ng-click="closeFormtest()">closeFormtest</button>-->
+</div>
+<button class="open-button" onclick="openForm()">Add User</button>
+
+<script>
+var app=angular.module('myapp',[])
+app.controller('myctrl',function($scope){
+	$scope.cty=['India','USA','Singapore','London']
+	$scope.filter=['name','age','country']
+	$scope.data=[{name:'vignesh',age:'21',country:'india',dob:'24/08/1998',gender:'male'},{name:'Steve jobs',age:'24',country:'USA',dob:'01/12/1995',gender:'male'},{name:'alan turing',age:'21',country:'london',dob:'20/04/1998',gender:'male'}]
+	$scope.add=function()
+	{
+		if($scope.name!="" && $scope.age!="" && $scope.country!="" && $scope.dob!="" && $scope.gender!="")
+		{
+			var adding={
+				name:$scope.name,
+				age:$scope.age,
+				country:$scope.country,
+				dob:$scope.dob,
+				gender:$scope.gender
+			}
+			$scope.data.push(adding)
+			$scope.name=""
+			$scope.age=""
+			$scope.country=""
+			$scope.dob=""
+			$scope.gender=""
+
+		}
+	}
+	$scope.deleteUser=function(index){
+		$scope.data.splice(index,1);
+		
+	}
+	$scope.editUser=function(index){
+		document.getElementById("myForm1").style.display = "block";
+		$scope.index_pass=index;
+		var editing=$scope.data[index]
+		$scope.edit_name=editing.name
+		$scope.edit_age=editing.age
+		$scope.edit_country=editing.country
+		$scope.edit_dob=editing.dob
+		$scope.edit_gender=editing.gender
+	
+	}
+	$scope.edit=function(index){
+		$scope.data[index].name=$scope.edit_name;
+		$scope.data[index].age=$scope.edit_age;
+		$scope.data[index].country=$scope.edit_country;
+		$scope.data[index].dob=$scope.edit_dob;
+		$scope.data[index].gender=$scope.edit_gender;
+		
+	}
+	$scope.closeFormtest = function(){
+		for(var i=0 ;i<$scope.data.length ; i++){
+			console.log(" test -- "+ $scope.data[i])
+		}
+	}
+});
+function openForm() {
+	  document.getElementById("myForm").style.display = "block";
+	}
+function closeForm() {
+	  document.getElementById("myForm").style.display = "none";
+	}
+function closeForm1() {
+	  document.getElementById("myForm1").style.display = "none";
+	}
+</script>
+</body>
+</html>
